@@ -57,7 +57,7 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
     private static final int RANDOM_VALUE1;
     private static final short RANDOM_VALUE2;
 
-    private static final AtomicInteger NEXT_COUNTER = new AtomicInteger(new SecureRandom().nextInt());
+    private static final BsonAtomicInteger NEXT_COUNTER = new BsonAtomicInteger();
 
     private static final char[] HEX_CHARS = new char[]{
             '0', '1', '2', '3', '4', '5', '6', '7',
@@ -471,4 +471,18 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
         return (byte) (x);
     }
 
+}
+
+class BsonAtomicInteger {
+    private static final SecureRandom RANDOM = new SecureRandom();
+    private static final AtomicInteger ATOMIC_INTEGER = new AtomicInteger();
+    private static int previousTime = 0;
+    public synchronized int getAndIncrement() {
+        int timeInSeconds = (int) (new Date().getTime() / 1000);
+        if (previousTime != timeInSeconds) {
+            previousTime = timeInSeconds;
+            ATOMIC_INTEGER.set(RANDOM.nextInt() & 0x000fffff);
+        }
+        return ATOMIC_INTEGER.getAndIncrement();
+    }
 }
