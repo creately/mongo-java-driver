@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-final Integer DEFAULT_JDK_VERSION = 17
+final Integer DEFAULT_JDK_VERSION = 11
 
 def javaMainProjects = subprojects - project(":util:taglets")
 
